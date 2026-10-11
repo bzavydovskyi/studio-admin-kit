@@ -632,3 +632,47 @@ button.admin-stat .stat-rule { color: var(--text-soft); font-size: 0.76rem; }
   .crm-leads-toolbar-row .admin-search-field { max-width: none; flex-basis: 100%; }
   .crm-result-count { margin-left: 0; }
 }
+
+/* ===================== Analytics: period picker, two-column rows, bar lists ===================== */
+.crm-period-wrap { position: relative; }
+.crm-period-popover { position: absolute; z-index: 40; right: 0; left: auto; top: calc(100% + 8px); width: min(320px, 86vw); background: var(--surface-raised); border: 1px solid var(--border); border-radius: var(--radius-l); padding: 16px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18); display: flex; flex-direction: column; gap: 12px; }
+.crm-period-label { display: flex; flex-wrap: wrap; gap: 4px; color: var(--text-soft); }
+.crm-period-label strong { color: var(--text); font-weight: 600; }
+
+.crm-analytics-row { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 20px; align-items: start; }
+.crm-analytics-row--even { grid-template-columns: 1fr 1fr; }
+.crm-analytics-refreshing { opacity: 0.6; pointer-events: none; transition: opacity var(--dur-fast) var(--ease); }
+@media (prefers-reduced-motion: reduce) { .crm-analytics-refreshing { transition: none; } }
+
+.crm-row--clickable { cursor: pointer; background: none; border: none; width: 100%; font: inherit; color: var(--text); text-align: left; }
+.crm-row--clickable:hover { color: var(--accent-deep); }
+.crm-row--clickable:hover strong { color: var(--accent-deep); }
+
+/* Horizontal-bar comparisons (popular services, request sources, ...) */
+.crm-bar-list { display: flex; flex-direction: column; gap: 10px; }
+.crm-bar-row {
+  display: grid; grid-template-columns: minmax(90px, 1fr) minmax(70px, 2fr) auto;
+  align-items: center; gap: 10px;
+  background: none; border: none; padding: 0; width: 100%; text-align: left; font: inherit;
+}
+.crm-bar-row--clickable { cursor: pointer; border-radius: var(--radius-m); transition: background var(--dur-fast) var(--ease); }
+.crm-bar-row--clickable:hover { background: var(--surface-raised); }
+.crm-bar-row--clickable:hover .crm-bar-label { color: var(--accent-deep); }
+.crm-bar-label { color: var(--text-soft); font-size: 0.86rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: color var(--dur-fast) var(--ease); }
+.crm-bar-track { height: 8px; border-radius: 4px; background: var(--border); overflow: hidden; }
+.crm-bar-fill { display: block; height: 100%; background: var(--accent); border-radius: 4px; }
+@media (prefers-reduced-motion: no-preference) { .crm-bar-fill { transition: width 0.25s var(--ease); } }
+.crm-bar-value { font-variant-numeric: tabular-nums; color: var(--text); font-size: 0.86rem; text-align: right; white-space: nowrap; }
+.crm-bar-share { color: var(--text-soft); font-size: 0.78rem; }
+
+@media (max-width: 860px) {
+  .crm-analytics-row, .crm-analytics-row--even { grid-template-columns: 1fr; }
+  .crm-period-wrap { width: 100%; }
+  .crm-period-popover { left: 0; right: auto; width: 100%; }
+}
+@media (max-width: 640px) {
+  .crm-bar-row { grid-template-columns: 1fr auto; grid-template-areas: "label value" "track track"; row-gap: 4px; }
+  .crm-bar-label { grid-area: label; }
+  .crm-bar-value { grid-area: value; }
+  .crm-bar-track { grid-area: track; }
+}
