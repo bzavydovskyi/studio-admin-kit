@@ -1,0 +1,22 @@
+{
+  "name": "@studio/admin-kit",
+  "version": "0.1.0",
+  "description": "Shared, themeable admin/CRM UI kit — nav shell, panels, cards, tables, and the small API-client conventions every client admin panel needs. No build step: consumers import the source directly via Next.js transpilePackages.",
+  "license": "UNLICENSED",
+  "private": false,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js",
+    "./hooks": "./src/hooks/index.js",
+    "./client": "./src/lib/adminApiClient.js",
+    "./server": "./src/lib/apiServer.js",
+    "./styles.css": "./src/styles/admin-kit.css",
+    "./package.json": "./package.json"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18",
+    "next": ">=14"
+  },
+  "dependencies": {}
+}
