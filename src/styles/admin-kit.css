@@ -197,23 +197,14 @@ button.admin-stat .stat-rule { color: var(--text-soft); font-size: 0.76rem; }
 .admin-checkbox { display: flex; align-items: center; gap: 8px; font-weight: 600; margin-bottom: 10px; }
 .admin-checkbox input { width: 18px; height: 18px; accent-color: var(--accent); }
 
-/* ===================== Buttons ===================== */
-.admin-btn {
-  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  padding: 12px 20px; border-radius: 999px; border: 1.5px solid var(--accent);
-  background: var(--accent); color: var(--on-accent, #fff) !important;
-  font-weight: 700; font-size: 0.94rem; cursor: pointer; min-height: 44px;
-  text-decoration: none !important;
-  transition: background var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease);
-}
-.admin-btn:hover { background: var(--accent-deep); border-color: var(--accent-deep); }
-.admin-btn:active { transform: translateY(1px); }
-.admin-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-.admin-btn.outline { background: transparent; color: var(--text) !important; border-color: var(--border); }
-.admin-btn.outline:hover { border-color: var(--text); background: var(--surface); }
-.admin-btn.danger { background: var(--danger); border-color: var(--danger); }
-.admin-btn.danger:hover { filter: brightness(0.92); }
-.admin-btn.small { padding: 8px 15px; min-height: 36px; font-size: 0.84rem; }
+/* Button appearance (.btn-primary/.outline/.ghost/.danger + the
+   .admin-btn alias family) lives further down, in the "Poseidon's exact
+   shape" block — a legacy pill-shaped .admin-btn block used to duplicate
+   it here with no .ghost support, and its unscoped :hover rule darkened
+   the background under every variant including ghost, whose hover text
+   color is also accent-deep — same color as its own background, so the
+   label went invisible. Removed; nothing here that block didn't already
+   cover. */
 
 .admin-actions { display: flex; flex-wrap: wrap; gap: 10px; }
 
