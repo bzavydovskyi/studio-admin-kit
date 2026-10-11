@@ -408,6 +408,11 @@ button.admin-stat .stat-rule { color: var(--text-soft); font-size: 0.76rem; }
 .crm-stat-grid--compact .crm-stat-card-value { font-size: 1.3rem; }
 .crm-stat-card-label { position: relative; }
 .crm-stat-card-info { margin-left: 6px; }
+/* A client-card's own 3-stat row (Poseidon's clients/[id] page) — fixed
+   at 3 columns rather than crm-stat-grid's 4, since that's what it always
+   shows (visits/upcoming/total paid), no reason to reflow for fewer. */
+.crm-client-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 22px; }
+@media (max-width: 560px) { .crm-client-stats { grid-template-columns: 1fr; } }
 
 /* ===================== Section card (a titled block on a page) ===================== */
 .crm-section-card { background: var(--surface-raised); border: 1px solid var(--border); border-radius: var(--radius-l); padding: 18px 20px; margin-bottom: 20px; }
