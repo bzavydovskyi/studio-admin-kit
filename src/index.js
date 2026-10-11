@@ -9,3 +9,4 @@ export { default as ScheduleList } from "./components/ScheduleList.js";
 export { default as StatusPill } from "./components/StatusPill.js";
 export { AttentionTiles, AttentionDetailPanel } from "./components/AttentionPanel.js";
 export { PanelSection, PanelRow, ClientBadge, Collapsible, PaymentLedger, Timeline } from "./components/PanelPrimitives.js";
+export { default as RowMenu } from "./components/RowMenu.js";

@@ -91,6 +91,6 @@ A site is never force-upgraded by a tag push — nothing happens until that app'
 
 ## What's in here vs. what stays app-specific
 
-**In this package:** `AdminChrome` (nav shell), `Modal`, `SidePanel`, `StatCard`, `AttentionTiles`/`AttentionDetailPanel`, `InfoPopover`, `AdminTable`, `useFocusTrap`, `useLockBodyScroll`, the `adminApiClient`/`apiServer` request conventions, and `admin-kit.css`'s component styles.
+**In this package:** `AdminChrome` (nav shell), `Modal`, `SidePanel`, `StatCard`, `SectionCard`, `ScheduleList`, `AttentionTiles`/`AttentionDetailPanel`, `InfoPopover`, `AdminTable`, `RowMenu`, `StatusPill`, the panel primitives (`PanelSection`/`PanelRow`/`ClientBadge`/`Collapsible`/`PaymentLedger`/`Timeline`), `useFocusTrap`, `useLockBodyScroll`, the `adminApiClient`/`apiServer` request conventions, and `admin-kit.css`'s component styles — including the searchable/filterable list pattern (`.crm-lead-list`/`.crm-lead-row`, `.admin-search-field`, `.crm-pill-group`, `.crm-filters-panel`) used by any "requests"-shaped list, not just Poseidon's own leads.
 
 **Not in here, by design:** availability/pricing/booking engines (fundamentally different per business — hourly-resource vs. day/night civil-date exclusivity, say), Prisma schemas, auth, calendar *grid* rendering, and any page that's mostly business logic with a thin shell around it. Each app owns its own version of these and feeds this package's components through props.
