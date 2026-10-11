@@ -2,24 +2,29 @@
 
 import SidePanel from "./SidePanel.js";
 
-// The "needs attention" tile grid for a Today/Overview screen. `tiles` is
-// caller-defined — the only business-specific part (which categories
-// exist, their counts/hints) lives in the consuming app; this component
-// only knows how to lay a tile grid out and report which one was clicked.
+// The "Потребують уваги" tile grid for a Today/Overview screen — exact
+// class names/values from Poseidon's own .crm-attn-grid/.crm-attn-tile.
+// `tiles` is caller-defined: which categories exist, their counts/hints,
+// is the only business-specific part; this component only knows how to
+// lay a tile grid out and report which one was clicked.
 export function AttentionTiles({ tiles, onSelect }) {
+  const allClear = tiles.every((t) => !t.count);
+  if (allClear) return <p className="crm-attention-empty">Немає дій, що потребують уваги.</p>;
   return (
-    <div className="crm-attention-grid">
+    <div className="crm-attn-grid">
       {tiles.map((t) => (
         <button
           key={t.key}
           type="button"
-          className={`crm-attention-tile${t.tone ? ` tone-${t.tone}` : ""}`}
+          className={`crm-attn-tile${t.count ? ` is-${t.tone}` : ""}`}
           onClick={() => onSelect?.(t.key)}
         >
-          {t.icon ? <span className="crm-attention-tile-icon">{t.icon}</span> : null}
-          <span className="crm-attention-tile-count">{t.count}</span>
-          <span className="crm-attention-tile-label">{t.label}</span>
-          {t.hint ? <span className="crm-attention-tile-hint">{t.hint}</span> : null}
+          <span className="crm-attn-tile-top">
+            {t.icon ? <span className="crm-attn-tile-icon">{t.icon}</span> : null}
+            <span className="crm-attn-tile-label">{t.label}</span>
+          </span>
+          <span className="crm-attn-tile-count">{t.count}</span>
+          {t.hint ? <span className="crm-attn-tile-hint">{t.hint}</span> : null}
         </button>
       ))}
     </div>

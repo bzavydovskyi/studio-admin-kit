@@ -4,4 +4,8 @@ export { default as SidePanel } from "./components/SidePanel.js";
 export { default as StatCard } from "./components/StatCard.js";
 export { default as InfoPopover } from "./components/InfoPopover.js";
 export { default as AdminTable } from "./components/AdminTable.js";
+export { default as SectionCard } from "./components/SectionCard.js";
+export { default as ScheduleList } from "./components/ScheduleList.js";
+export { default as StatusPill } from "./components/StatusPill.js";
 export { AttentionTiles, AttentionDetailPanel } from "./components/AttentionPanel.js";
+export { PanelSection, PanelRow, ClientBadge, Collapsible, PaymentLedger, Timeline } from "./components/PanelPrimitives.js";

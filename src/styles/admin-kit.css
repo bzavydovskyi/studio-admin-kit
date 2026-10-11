@@ -329,8 +329,198 @@ button.admin-stat .stat-rule { color: var(--text-soft); font-size: 0.76rem; }
 .admin-gallery-item img { width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block; }
 .admin-gallery-item .g-body { padding: 8px; display: flex; flex-direction: column; gap: 6px; }
 
-.history-list { display: flex; flex-direction: column; gap: 8px; font-size: 0.85rem; }
-.history-item { padding: 8px 10px; border-left: 2px solid var(--border); }
-.history-item .h-actor { color: var(--text-soft); }
-
 .hint { font-weight: 500; font-size: 0.8rem; color: var(--text-soft); }
+
+/* =====================================================================
+   The rest of this file matches Poseidon's actual admin.css class names
+   and values (not just "similar styling") — the owner asked specifically
+   to preserve its exact design/behavior, so these are the real source of
+   truth to diverge from, not a loose inspiration. ===================== */
+
+/* ===================== Buttons (generic names, Poseidon's exact shape) =====
+   Poseidon's own classes are .btn-gold/.btn-outline-gold — brand-colored
+   names baked into the class itself, which can't work unchanged in a
+   package meant to recolor per client. Same visual system, neutral names:
+   .btn-primary/.btn-outline/.btn-ghost recolor entirely through
+   --accent/--on-accent/--border, nothing brand-specific in the selector.
+   .admin-btn (+ .outline/.danger/.small) stays as a drop-in equivalent
+   alias so Levin's House's many existing call sites don't need touching. */
+.btn, .admin-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.6em 1.3em;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: var(--radius-s);
+  border: 1px solid transparent;
+  background: none;
+  cursor: pointer;
+  min-height: 40px;
+  text-decoration: none !important;
+  color: var(--text) !important;
+  transition: background var(--dur-med) var(--ease), color var(--dur-med) var(--ease), border-color var(--dur-med) var(--ease), transform var(--dur-med) var(--ease);
+}
+.btn svg { width: 16px; height: 16px; transition: transform var(--dur-med) var(--ease); }
+.btn:hover svg { transform: translateX(4px); }
+.btn:disabled, .admin-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+.btn-primary, .admin-btn:not(.outline):not(.danger):not(.ghost) {
+  background: var(--accent);
+  color: var(--on-accent) !important;
+  border-color: var(--accent);
+}
+.btn-primary:hover, .admin-btn:not(.outline):not(.danger):not(.ghost):hover { filter: brightness(1.08); transform: translateY(-1px); }
+
+.btn-outline, .admin-btn.outline {
+  border-color: var(--accent);
+  color: var(--accent) !important;
+}
+.btn-outline:hover, .admin-btn.outline:hover { background: var(--accent); color: var(--on-accent) !important; }
+
+.btn-ghost, .admin-btn.ghost {
+  border-color: var(--border);
+  color: var(--text) !important;
+}
+.btn-ghost:hover, .admin-btn.ghost:hover { border-color: var(--accent); color: var(--accent-deep) !important; }
+
+.btn-danger, .admin-btn.danger {
+  background: var(--danger);
+  border-color: var(--danger);
+  color: var(--on-accent) !important;
+}
+.btn-danger:hover, .admin-btn.danger:hover { filter: brightness(0.92); }
+
+/* Text-only destructive action (e.g. "Скасувати" inside a panel footer) —
+   deliberately the quietest-looking action on the page. */
+.admin-del-btn { background: none; border: none; color: var(--text-soft); cursor: pointer; font-size: 0.8rem; padding: 4px; transition: color var(--dur-fast) var(--ease); }
+.admin-del-btn:hover { color: var(--danger); }
+
+.btn.small, .admin-btn.small { padding: 0.45em 1em; font-size: 0.78rem; min-height: 34px; }
+
+/* ===================== Status pill (dot + label, tone-colored) ===================== */
+.admin-status { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 20px; background: var(--surface); color: var(--text); font-size: 0.78rem; font-weight: 600; }
+.admin-status::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+.admin-status.tone-success { color: var(--success); }
+.admin-status.tone-warning { color: var(--warning); }
+.admin-status.tone-danger { color: var(--danger); }
+.admin-status.tone-accent { color: var(--accent); }
+.admin-status.tone-neutral { color: var(--text-soft); }
+
+/* ===================== Stat grid (Огляд/Сьогодні top row) ===================== */
+.crm-stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 22px; min-width: 0; }
+.crm-stat-grid > * { min-width: 0; }
+@media (max-width: 720px) { .crm-stat-grid { grid-template-columns: repeat(2, 1fr); } }
+.crm-stat-grid--compact .crm-stat-card { padding: 12px 14px; }
+.crm-stat-grid--compact .crm-stat-card-label { font-size: 0.72rem; margin-bottom: 4px; }
+.crm-stat-grid--compact .crm-stat-card-value { font-size: 1.3rem; }
+.crm-stat-card-label { position: relative; }
+.crm-stat-card-info { margin-left: 6px; }
+
+/* ===================== Section card (a titled block on a page) ===================== */
+.crm-section-card { background: var(--surface-raised); border: 1px solid var(--border); border-radius: var(--radius-l); padding: 18px 20px; margin-bottom: 20px; }
+.crm-section-card h3 { font-size: 1rem; margin: 0 0 14px; }
+
+/* ===================== Attention tiles (exact Poseidon shape/values) ===================== */
+.crm-attn-section h3 { margin-bottom: 14px; }
+.crm-attn-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; }
+.crm-attn-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  min-height: 108px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid transparent;
+  border-radius: var(--radius-l);
+  padding: 14px 16px;
+  text-align: left;
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: border-color var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease);
+}
+.crm-attn-tile:hover { background: var(--accent-pale); }
+.crm-attn-tile-top { display: flex; align-items: center; gap: 8px; width: 100%; }
+.crm-attn-tile-icon { width: 18px; height: 18px; flex-shrink: 0; color: var(--text-soft); }
+.crm-attn-tile-icon svg { width: 100%; height: 100%; }
+.crm-attn-tile-label { font-size: 0.8rem; color: var(--text-soft); line-height: 1.25; }
+.crm-attn-tile-count { font-size: 1.6rem; font-weight: 700; color: var(--text); font-variant-numeric: tabular-nums; line-height: 1; font-family: var(--font-display); }
+.crm-attn-tile-hint { font-size: 0.74rem; color: var(--text-soft); margin-top: auto; line-height: 1.3; }
+.crm-attn-tile.is-urgent { border-left-color: var(--danger); }
+.crm-attn-tile.is-urgent .crm-attn-tile-count, .crm-attn-tile.is-urgent .crm-attn-tile-icon { color: var(--danger); }
+.crm-attn-tile.is-waiting { border-left-color: var(--warning); }
+.crm-attn-tile.is-waiting .crm-attn-tile-count, .crm-attn-tile.is-waiting .crm-attn-tile-icon { color: var(--warning); }
+.crm-attn-tile.is-new { border-left-color: var(--accent); }
+.crm-attn-tile.is-new .crm-attn-tile-count, .crm-attn-tile.is-new .crm-attn-tile-icon { color: var(--accent-deep); }
+.crm-attention-empty { color: var(--text-soft); font-size: 0.86rem; }
+
+/* ===================== Schedule list (Сьогодні's "Далі сьогодні" rows) ===================== */
+.crm-sched-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+.crm-sched-head h3 { margin: 0; }
+.crm-sched-cal-link { font-size: 0.82rem; color: var(--text-soft); transition: color var(--dur-fast) var(--ease); text-decoration: none; }
+.crm-sched-cal-link:hover { color: var(--accent-deep); }
+.crm-leads-count { background: var(--warning-bg); color: var(--warning); font-size: 0.78rem; font-weight: 700; border-radius: 999px; padding: 2px 9px; }
+
+.crm-sched-list { display: flex; flex-direction: column; gap: 8px; }
+.crm-sched-row {
+  display: grid;
+  grid-template-columns: 96px minmax(110px, 1fr) minmax(130px, 1.3fr) auto auto 24px;
+  align-items: center;
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid transparent;
+  border-radius: var(--radius-l);
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: border-color var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease);
+}
+.crm-sched-row:hover { border-color: var(--accent); }
+.crm-sched-row.is-current { border-color: var(--accent); background: var(--accent-pale); }
+.crm-sched-row.is-next { border-color: var(--accent); }
+.crm-sched-row.is-past { border-color: var(--danger); }
+.crm-sched-row--upcoming { grid-template-columns: 168px minmax(110px, 1fr) minmax(130px, 1.3fr) auto auto 24px; }
+@media (max-width: 720px) {
+  .crm-sched-row, .crm-sched-row--upcoming { grid-template-columns: 1fr; gap: 4px; }
+}
+.crm-sched-past { border: 1px solid var(--danger); background: var(--surface-raised); }
+.crm-sched-past h3 { color: var(--danger); }
+.crm-sched-past-actions { grid-column: 5 / -1; display: flex; gap: 6px; justify-content: flex-end; flex-wrap: wrap; }
+@media (max-width: 720px) { .crm-sched-past-actions { grid-column: 1; justify-content: flex-start; } }
+.crm-sched-past-actions .btn, .crm-sched-past-actions .admin-btn { font-size: 0.74rem; padding: 0.5em 0.9em; white-space: nowrap; }
+.crm-sched-time { font-variant-numeric: tabular-nums; color: var(--text); font-size: 0.88rem; white-space: nowrap; }
+.crm-sched-name { color: var(--text); font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600; }
+.crm-sched-format { color: var(--text-soft); font-size: 0.82rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.crm-sched-amount { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; line-height: 1.3; }
+.crm-sched-amount strong { display: block; color: var(--text); font-size: 0.88rem; font-weight: 600; }
+.crm-sched-amount span { font-size: 0.74rem; color: var(--text-soft); }
+.crm-sched-open { width: 20px; height: 20px; color: var(--text-soft); }
+.crm-sched-open svg { width: 100%; height: 100%; }
+.crm-sched-empty { text-align: center; padding: 30px 20px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.crm-sched-empty p { color: var(--text-soft); font-size: 0.9rem; margin: 0; }
+
+/* ===================== Panel content primitives (inside SidePanel) ===================== */
+.crm-client-badge { display: flex; align-items: center; justify-content: space-between; gap: 10px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-m); padding: 10px 14px; font-size: 0.84rem; margin-bottom: 14px; }
+.crm-client-badge strong { color: var(--accent-deep); }
+
+.crm-section { margin-bottom: 22px; }
+.crm-section + .crm-section { padding-top: 22px; border-top: 1px solid var(--border); margin-top: -4px; }
+.crm-section-title { display: flex; align-items: center; gap: 6px; font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-soft); margin-bottom: 10px; }
+.crm-row { display: flex; justify-content: space-between; gap: 12px; font-size: 0.88rem; padding: 6px 0; }
+.crm-row span:first-child { color: var(--text-soft); }
+.crm-row strong { color: var(--text); font-variant-numeric: tabular-nums; }
+.crm-row.crm-row--highlight strong { color: var(--accent-deep); }
+
+.crm-payment-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+.crm-payment-row { display: flex; justify-content: space-between; gap: 10px; font-size: 0.84rem; background: var(--surface); border-radius: var(--radius-m); padding: 8px 12px; }
+.crm-payment-row.is-refund { color: var(--danger); }
+.crm-payment-meta { color: var(--text-soft); font-size: 0.76rem; }
+
+.crm-timeline { display: flex; flex-direction: column; gap: 10px; }
+.crm-timeline-item { font-size: 0.82rem; color: var(--text); padding-left: 14px; border-left: 2px solid var(--border); }
+.crm-timeline-time { display: block; font-size: 0.72rem; color: var(--text-soft); margin-bottom: 2px; }
+
+.crm-collapsible-toggle { display: flex; align-items: center; gap: 6px; background: none; border: none; color: var(--text-soft); font-size: 0.82rem; cursor: pointer; padding: 6px 0; }
+.crm-collapsible-toggle svg { width: 13px; height: 13px; transition: transform var(--dur-fast) var(--ease); }
+.crm-collapsible-toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
