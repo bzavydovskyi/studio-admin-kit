@@ -93,9 +93,15 @@ export default function AdminChrome({
 
         <div className={`admin-side-panel${mobileOpen ? " is-open" : ""}`}>
           <div className="admin-nav-scroll">
+            {/* prefetch={false}: every nav item is a DB-backed dynamic
+                route, so next/link's default prefetch-on-mount would fire
+                ~7 concurrent Prisma queries the instant this chrome
+                renders — a real problem against a serverless Postgres
+                compute that autosuspends and can drop connections while
+                waking up from a burst like that. */}
             <nav className="admin-nav">
               {navItems.map((n) => (
-                <Link key={n.href} href={n.href} className={`admin-nav-btn${pathname === n.href ? " is-active" : ""}`}>
+                <Link key={n.href} href={n.href} prefetch={false} className={`admin-nav-btn${pathname === n.href ? " is-active" : ""}`}>
                   <Icon shape={icons[n.icon]} />
                   {n.label}
                 </Link>
@@ -123,6 +129,7 @@ export default function AdminChrome({
                         <Link
                           key={n.href}
                           href={n.href}
+                          prefetch={false}
                           className={`admin-nav-btn admin-nav-btn--sub${pathname === n.href ? " is-active" : ""}`}
                         >
                           {n.label}
