@@ -429,7 +429,12 @@ button.admin-stat .stat-rule { color: var(--text-soft); font-size: 0.76rem; }
   min-height: 108px;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-left: 3px solid transparent;
+  /* A tile with nothing to report (count 0, no .is-* tone class) still
+     gets a left accent — just in neutral gray, matching the border
+     color — so all four tiles read as the same family of card with a
+     consistent left edge, not three "unfinished-looking" ones next to
+     one that has a real color. */
+  border-left: 3px solid var(--border);
   border-radius: var(--radius-l);
   padding: 14px 16px;
   text-align: left;
