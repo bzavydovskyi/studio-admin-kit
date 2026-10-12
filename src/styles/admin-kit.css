@@ -89,7 +89,7 @@
   .admin-side-brand { margin-bottom: 0; padding: 0; }
   .admin-burger {
     display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;
-    width: 40px; height: 40px; flex-shrink: 0;
+    width: 44px; height: 44px; flex-shrink: 0;
     background: none; border: 1px solid var(--border); border-radius: var(--radius-m);
     cursor: pointer; padding: 0;
   }
@@ -280,7 +280,13 @@ button.admin-stat .stat-rule { color: var(--text-soft); font-size: 0.76rem; }
 .crm-panel-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; padding: 20px 24px 16px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
 .crm-panel-head h3 { font-size: 1.2rem; margin: 0 0 4px; font-weight: 700; font-family: var(--font-display); }
 .crm-panel-sub { font-size: 0.84rem; color: var(--text-soft); margin: 0; }
-.crm-panel-close { background: none; border: none; color: var(--text-soft); font-size: 1.5rem; cursor: pointer; line-height: 1; flex-shrink: 0; }
+.crm-panel-close {
+  background: none; border: none; color: var(--text-soft); font-size: 1.5rem; cursor: pointer; line-height: 1; flex-shrink: 0;
+  min-width: 44px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center;
+  margin: -10px -10px 0 0; border-radius: var(--radius-m);
+  transition: background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+.crm-panel-close:hover { background: var(--accent-pale); }
 .crm-panel-close:hover { color: var(--text); }
 .crm-panel-body { flex: 1; padding: 18px 24px 24px; }
 .crm-panel-footer { padding: 14px 24px; border-top: 1px solid var(--border); flex-shrink: 0; display: flex; gap: 10px; flex-wrap: wrap; background: var(--surface-raised); }
