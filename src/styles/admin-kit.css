@@ -427,14 +427,16 @@ button.admin-stat .stat-rule { color: var(--text-soft); font-size: 0.76rem; }
   align-items: flex-start;
   gap: 8px;
   min-height: 108px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  /* A tile with nothing to report (count 0, no .is-* tone class) still
-     gets a left accent — just in neutral gray, matching the border
-     color — so all four tiles read as the same family of card with a
-     consistent left edge, not three "unfinished-looking" ones next to
-     one that has a real color. */
-  border-left: 3px solid var(--border);
+  /* Calm (count 0) look by default — a tile with nothing to report is
+     still a full member of the same card family, not a disabled or
+     unfinished-looking one: same 3px left bar, radius, padding and
+     outline as an urgent tile, just in quieter colors. Every color here
+     is a semantic token with a fallback, not a raw hex, so a future
+     client theme can restate --attn-neutral(-bg) for its own palette
+     instead of inheriting Levin's House's sage-green read. */
+  background: var(--attn-neutral-bg, var(--surface));
+  border: 1px solid var(--attn-neutral-border, var(--border));
+  border-left: 3px solid var(--attn-neutral, #B8BEB7);
   border-radius: var(--radius-l);
   padding: 14px 16px;
   text-align: left;
@@ -443,17 +445,21 @@ button.admin-stat .stat-rule { color: var(--text-soft); font-size: 0.76rem; }
   transition: border-color var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease);
 }
 .crm-attn-tile:hover { background: var(--accent-pale); }
+.crm-attn-tile:active:not(:disabled) { transform: translateY(1px); transition-duration: 0.06s; }
 .crm-attn-tile-top { display: flex; align-items: center; gap: 8px; width: 100%; }
-.crm-attn-tile-icon { width: 18px; height: 18px; flex-shrink: 0; color: var(--text-soft); }
+.crm-attn-tile-icon { width: 18px; height: 18px; flex-shrink: 0; color: var(--attn-neutral, #B8BEB7); }
 .crm-attn-tile-icon svg { width: 100%; height: 100%; }
 .crm-attn-tile-label { font-size: 0.8rem; color: var(--text-soft); line-height: 1.25; }
 .crm-attn-tile-count { font-size: 1.6rem; font-weight: 700; color: var(--text); font-variant-numeric: tabular-nums; line-height: 1; font-family: var(--font-display); }
 .crm-attn-tile-hint { font-size: 0.74rem; color: var(--text-soft); margin-top: auto; line-height: 1.3; }
-.crm-attn-tile.is-urgent { border-left-color: var(--danger); }
+/* Non-zero states keep the existing accent colors but also tint the
+   background and lift the icon color, so a calm tile and an urgent one
+   read apart at a glance — not just by the thin left bar. */
+.crm-attn-tile.is-urgent { background: var(--danger-bg); border-left-color: var(--danger); }
 .crm-attn-tile.is-urgent .crm-attn-tile-count, .crm-attn-tile.is-urgent .crm-attn-tile-icon { color: var(--danger); }
-.crm-attn-tile.is-waiting { border-left-color: var(--warning); }
+.crm-attn-tile.is-waiting { background: var(--warning-bg); border-left-color: var(--warning); }
 .crm-attn-tile.is-waiting .crm-attn-tile-count, .crm-attn-tile.is-waiting .crm-attn-tile-icon { color: var(--warning); }
-.crm-attn-tile.is-new { border-left-color: var(--accent); }
+.crm-attn-tile.is-new { background: var(--accent-pale); border-left-color: var(--accent); }
 .crm-attn-tile.is-new .crm-attn-tile-count, .crm-attn-tile.is-new .crm-attn-tile-icon { color: var(--accent-deep); }
 .crm-attention-empty { color: var(--text-soft); font-size: 0.86rem; }
 
