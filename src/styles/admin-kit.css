@@ -351,10 +351,11 @@ button.admin-stat .stat-rule { color: var(--text-soft); font-size: 0.76rem; }
   min-height: 40px;
   text-decoration: none !important;
   color: var(--text) !important;
-  transition: background var(--dur-med) var(--ease), color var(--dur-med) var(--ease), border-color var(--dur-med) var(--ease), transform var(--dur-med) var(--ease);
+  transition: background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
 }
-.btn svg { width: 16px; height: 16px; transition: transform var(--dur-med) var(--ease); }
+.btn svg { width: 16px; height: 16px; transition: transform var(--dur-fast) var(--ease); }
 .btn:hover svg { transform: translateX(4px); }
+.btn:active:not(:disabled), .admin-btn:active:not(:disabled) { transform: translateY(1px); transition-duration: 0.06s; }
 .btn:disabled, .admin-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
 .btn-primary, .admin-btn:not(.outline):not(.danger):not(.ghost) {
@@ -686,4 +687,33 @@ button.admin-stat .stat-rule { color: var(--text-soft); font-size: 0.76rem; }
   .crm-bar-label { grid-area: label; }
   .crm-bar-value { grid-area: value; }
   .crm-bar-track { grid-area: track; }
+}
+
+/* ===================== Motion: focus ring, reduced-motion =====================
+   One shared place for the cross-cutting rules every consumer gets for
+   free, rather than every client admin re-solving the same two problems
+   (keyboard focus visibility, respecting the user's OS-level motion
+   preference) on its own. */
+
+/* A single rule covers every interactive element admin-wide — buttons,
+   tabs, nav items, attention tiles, calendar blocks — without enumerating
+   each one here (and silently missing the next one added later). An
+   element that already provides its own equally-visible focus treatment
+   (a field input's accent box-shadow) suppresses this via a same-property,
+   higher-specificity :focus rule of its own, so there's no double ring. */
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: var(--radius-s); }
+
+/* Respect prefers-reduced-motion admin-wide, in one place: every
+   transition/animation in this file (and in any consumer's own admin.css,
+   since !important wins the property regardless of which stylesheet
+   declared it) collapses to effectively instant. State changes (a modal
+   appearing, a tile's color changing, a tab becoming active) still
+   happen — they're just no longer animated. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }
