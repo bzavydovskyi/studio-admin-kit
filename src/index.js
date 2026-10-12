@@ -11,4 +11,12 @@ export { AttentionTiles, AttentionDetailPanel } from "./components/AttentionPane
 export { PanelSection, PanelRow, ClientBadge, Collapsible, PaymentLedger, Timeline } from "./components/PanelPrimitives.js";
 export { default as RowMenu } from "./components/RowMenu.js";
 export { default as BarList } from "./components/BarList.js";
-export { ToastProvider, default as useToast } from "./components/ToastProvider.js";
+// useToast is exported from "@studio/admin-kit/hooks" only, not here —
+// ToastProvider is a component a Server Component (the protected layout)
+// imports and renders directly, which puts this whole module through
+// Next's "use client" boundary/reference handling; a plain hook sharing
+// that same module ended up resolved as a non-callable client reference
+// in production (but not in dev), breaking every admin page that called
+// it. Keeping the hook on a path no Server Component ever imports from
+// avoids the whole class of bug rather than working around one instance.
+export { default as ToastProvider } from "./components/ToastProvider.js";
