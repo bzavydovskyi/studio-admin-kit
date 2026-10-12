@@ -11,3 +11,4 @@ export { AttentionTiles, AttentionDetailPanel } from "./components/AttentionPane
 export { PanelSection, PanelRow, ClientBadge, Collapsible, PaymentLedger, Timeline } from "./components/PanelPrimitives.js";
 export { default as RowMenu } from "./components/RowMenu.js";
 export { default as BarList } from "./components/BarList.js";
+export { ToastProvider, default as useToast } from "./components/ToastProvider.js";
