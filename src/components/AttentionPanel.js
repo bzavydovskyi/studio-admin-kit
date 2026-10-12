@@ -1,6 +1,7 @@
 "use client";
 
 import SidePanel from "./SidePanel.js";
+import usePanelClose from "../hooks/usePanelClose.js";
 
 // The "Потребують уваги" tile grid for a Today/Overview screen — exact
 // class names/values from Poseidon's own .crm-attn-grid/.crm-attn-tile.
@@ -48,12 +49,35 @@ export function AttentionDetailPanel({
 }) {
   return (
     <SidePanel onClose={onClose} labelledBy="attention-panel-title">
+      <AttentionDetailBody
+        title={title}
+        subtitle={subtitle}
+        items={items}
+        loading={loading}
+        error={error}
+        emptyText={emptyText}
+        renderItem={renderItem}
+        onRetry={onRetry}
+      />
+    </SidePanel>
+  );
+}
+
+// A leaf component, not inline in AttentionDetailPanel's own JSX: it needs
+// to call usePanelClose() from inside SidePanel's Provider (rendered as
+// part of SidePanel's children subtree), which a hook call in
+// AttentionDetailPanel's own body couldn't reach — AttentionDetailPanel is
+// SidePanel's parent, not its descendant.
+function AttentionDetailBody({ title, subtitle, items, loading, error, emptyText, renderItem, onRetry }) {
+  const requestClose = usePanelClose();
+  return (
+    <>
       <div className="crm-panel-head">
         <div>
           <h3 id="attention-panel-title">{title}</h3>
           {subtitle ? <p className="crm-panel-sub">{subtitle}</p> : null}
         </div>
-        <button type="button" className="crm-panel-close" aria-label="Закрити" onClick={onClose}>
+        <button type="button" className="crm-panel-close" aria-label="Закрити" onClick={requestClose}>
           ×
         </button>
       </div>
@@ -75,6 +99,6 @@ export function AttentionDetailPanel({
           <div className="admin-list">{items.map((item, i) => renderItem(item, i))}</div>
         )}
       </div>
-    </SidePanel>
+    </>
   );
 }

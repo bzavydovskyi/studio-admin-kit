@@ -11,3 +11,9 @@ export { AttentionTiles, AttentionDetailPanel } from "./components/AttentionPane
 export { PanelSection, PanelRow, ClientBadge, Collapsible, PaymentLedger, Timeline } from "./components/PanelPrimitives.js";
 export { default as RowMenu } from "./components/RowMenu.js";
 export { default as BarList } from "./components/BarList.js";
+// The named export, not "default as" — ToastProvider.js's default export
+// is useToast (exported only from "@studio/admin-kit/hooks"), not this
+// component. Getting this backwards once already (v0.4.1) rendered the
+// hook as a component in production and took the whole admin section
+// down — see studio-admin-kit's own git history for the postmortem.
+export { ToastProvider } from "./components/ToastProvider.js";
