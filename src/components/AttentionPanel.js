@@ -63,6 +63,11 @@ export function AttentionDetailPanel({
   );
 }
 
+// A leaf component, not inline in AttentionDetailPanel's own JSX: it needs
+// to call usePanelClose() from inside SidePanel's Provider (rendered as
+// part of SidePanel's children subtree), which a hook call in
+// AttentionDetailPanel's own body couldn't reach — AttentionDetailPanel is
+// SidePanel's parent, not its descendant.
 function AttentionDetailBody({ title, subtitle, items, loading, error, emptyText, renderItem, onRetry }) {
   const requestClose = usePanelClose();
   return (
