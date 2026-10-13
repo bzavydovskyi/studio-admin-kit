@@ -92,6 +92,7 @@ export default function AdminChrome({
         </div>
 
         <div className={`admin-side-panel${mobileOpen ? " is-open" : ""}`}>
+         <div className="admin-side-panel-inner">
           <div className="admin-nav-scroll">
             {/* prefetch={false}: every nav item is a DB-backed dynamic
                 route, so next/link's default prefetch-on-mount would fire
@@ -151,6 +152,7 @@ export default function AdminChrome({
               ← На сайт
             </Link>
           </div>
+         </div>
         </div>
       </aside>
 
