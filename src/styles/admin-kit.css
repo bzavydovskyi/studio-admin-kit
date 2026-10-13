@@ -125,7 +125,14 @@
        base rule above — without this, none of the positioning/transform/
        opacity below would generate a box at all. */
     display: block;
-    position: absolute; top: 100%; left: 0; right: 0; z-index: 300;
+    /* Fixed (not absolute off the sticky header) so the panel's position
+       never depends on scroll offset: position:absolute off a sticky
+       ancestor, combined with the scroll-lock's body position:fixed
+       trick, can land the panel at the wrong spot if the page was
+       already scrolled when the menu opened ("the menu flies away").
+       69px matches .admin-side-top's real rendered height (44px burger +
+       12px top/bottom padding + 1px border). */
+    position: fixed; top: 69px; left: 0; right: 0; z-index: 300;
     background: var(--surface-raised);
     border-bottom: 1px solid var(--border);
     box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18);
@@ -148,7 +155,7 @@
 
   .admin-side-panel-inner {
     padding: 8px 16px calc(16px + env(safe-area-inset-bottom));
-    max-height: calc(100dvh - 64px);
+    max-height: calc(100dvh - 69px);
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
