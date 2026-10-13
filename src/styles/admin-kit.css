@@ -729,13 +729,14 @@ button.admin-stat .stat-rule { color: var(--text-soft); font-size: 0.76rem; }
    mount/unmount instantly via conditional rendering rather than a phase
    machine — not worth the same unmount-delay plumbing as Modal/SidePanel
    for something this small and this quickly re-openable — so only the
-   entrance is animated; a quick opacity+4-8px shift on mount. */
+   entrance is animated: a calm opacity fade, no directional slide, so it
+   reads as the block settling in rather than sliding/popping into place. */
 @keyframes admin-menu-in {
-  from { opacity: 0; transform: translateY(-6px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 .admin-popover, .crm-period-popover, .crm-row-menu-list {
-  animation: admin-menu-in var(--dur-menu, 190ms) var(--ease-out);
+  animation: admin-menu-in var(--dur-enter, 210ms) var(--ease-out);
 }
 
 /* Tidy success/error confirmation toast — shown only once the caller has
