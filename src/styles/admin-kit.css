@@ -85,7 +85,11 @@
 @media (max-width: 959px) {
   .admin-app { flex-direction: column; }
   .admin-side { width: 100%; height: auto; position: sticky; top: 0; z-index: 100; flex-direction: column; padding: 0; }
-  .admin-side-top { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: var(--surface-raised); border-bottom: 1px solid var(--border); }
+  /* z-index above the backdrop (290): the backdrop is a fixed full-viewport
+     layer so it also covers the header's own area, and without this the
+     burger button would be unclickable (backdrop intercepting the click)
+     while the menu is open. */
+  .admin-side-top { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: var(--surface-raised); border-bottom: 1px solid var(--border); position: relative; z-index: 300; }
   .admin-side-brand { margin-bottom: 0; padding: 0; }
   .admin-burger {
     display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;
@@ -99,38 +103,55 @@
   .admin-burger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
   @media (prefers-reduced-motion: reduce) { .admin-burger span { transition: none; } }
 
-  /* grid-template-rows 0fr -> 1fr (not max-height) so the collapse always
-     tracks the nav's real height: animating to a fixed max-height ceiling
-     (e.g. 600px) makes a short menu finish growing within a small fraction
-     of the declared duration, then "grow" invisibly past its real size for
-     the rest — reading as an abrupt snap instead of a calm reveal. */
-  .admin-side-panel {
-    display: grid;
-    grid-template-rows: 0fr;
-    background: var(--surface-raised);
-    border-bottom: 1px solid transparent;
-    transition: grid-template-rows var(--dur-menu, 190ms) var(--ease-out), border-color var(--dur-menu, 190ms) var(--ease-out);
-  }
-  .admin-side-panel.is-open {
-    grid-template-rows: 1fr;
-    border-bottom-color: var(--border);
-  }
-  /* The single grid item: nav + footer collapse/scroll together as one
-     unit (not admin-nav-scroll alone), otherwise the footer — a sibling
-     of admin-nav-scroll — would fall into its own auto-sized implicit
-     grid row and stay visible while "collapsed". */
-  .admin-side-panel-inner {
-    overflow: hidden;
-    min-height: 0;
-    padding: 0 16px;
+  /* A true overlay (fixed backdrop + floating panel), not an in-flow
+     accordion: the page underneath must not reflow when the menu opens,
+     and a real backdrop/scroll-lock/focus-trap only make sense once this
+     stopped being "part of the page" and became a modal dropdown. Driven
+     by transform+opacity (never height/max-height — those can't be
+     animated smoothly) with the enter and exit each declaring their own
+     transition-duration, since .is-closing overrides the base rule's. */
+  .admin-side-backdrop {
+    position: fixed; inset: 0; z-index: 290;
+    background: rgba(0, 0, 0, 0.38);
     opacity: 0;
-    transition: padding var(--dur-menu, 190ms) var(--ease-out), opacity var(--dur-menu, 190ms) var(--ease-out);
+    pointer-events: none;
+    transition: opacity 240ms var(--ease);
   }
-  .admin-side-panel.is-open .admin-side-panel-inner {
-    padding: 8px 16px 16px;
-    opacity: 1;
-    max-height: min(70vh, 600px);
+  .admin-side-backdrop.is-open { opacity: 1; pointer-events: auto; transition-duration: 300ms; }
+  .admin-side-backdrop.is-closing { opacity: 0; pointer-events: none; }
+
+  .admin-side-panel {
+    /* Overrides the unconditional "display: contents" from the desktop
+       base rule above — without this, none of the positioning/transform/
+       opacity below would generate a box at all. */
+    display: block;
+    position: absolute; top: 100%; left: 0; right: 0; z-index: 300;
+    background: var(--surface-raised);
+    border-bottom: 1px solid var(--border);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18);
+    transform: translateY(-10px);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 300ms cubic-bezier(.22, 1, .36, 1), opacity 300ms cubic-bezier(.22, 1, .36, 1);
+  }
+  .admin-side-panel.is-open { transform: translateY(0); opacity: 1; pointer-events: auto; }
+  .admin-side-panel.is-closing {
+    transform: translateY(-10px);
+    opacity: 0;
+    pointer-events: none;
+    transition-duration: 240ms;
+    transition-timing-function: var(--ease);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .admin-side-backdrop, .admin-side-panel { transition-duration: 1ms; }
+  }
+
+  .admin-side-panel-inner {
+    padding: 8px 16px calc(16px + env(safe-area-inset-bottom));
+    max-height: calc(100dvh - 64px);
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
   }
   .admin-nav-scroll { flex: none; overflow: visible; }
   .admin-side-footer { border-top: 1px solid var(--border); }

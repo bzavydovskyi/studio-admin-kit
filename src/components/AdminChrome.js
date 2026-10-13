@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import useFocusTrap from "../hooks/useFocusTrap.js";
+import useLockBodyScroll from "../hooks/useLockBodyScroll.js";
 
 function DefaultLink({ href, className, children, ...rest }) {
   return (
@@ -9,6 +11,20 @@ function DefaultLink({ href, className, children, ...rest }) {
     </a>
   );
 }
+
+// Mounted only while the mobile dropdown is open/closing — a standalone
+// component so useLockBodyScroll's mount-locks/unmount-restores lifecycle
+// (it takes no active flag) tracks that window instead of AdminChrome's.
+function MobileNavScrollLock() {
+  useLockBodyScroll();
+  return null;
+}
+
+// Open and close run at different speeds (see the CSS): a calmer settle-in,
+// a quicker dismissal. This constant only needs the close side — it's how
+// long the hooks below (scroll lock, focus trap) stay engaged after the
+// close transition starts, so they don't let go before it's visually done.
+const MOBILE_NAV_CLOSE_MS = 240;
 
 // The admin app shell: brand + collapsible sidebar on desktop, a slim
 // sticky top bar with a burger-triggered dropdown on mobile — Poseidon's
@@ -55,11 +71,56 @@ export default function AdminChrome({
     for (const g of navGroups) init[g.key] = g.items.some((n) => pathname === n.href);
     return init;
   });
-  const [mobileOpen, setMobileOpen] = useState(false);
+
+  // 'closed' | 'open' | 'closing'. The nav/footer markup below is always
+  // mounted (desktop needs it permanently rendered via display:contents
+  // anyway), so — unlike Modal/SidePanel, which animate a true mount/
+  // unmount — toggling this class directly is enough to trigger the CSS
+  // transition in either direction; no entering-frame step needed. The
+  // separate 'closing' phase exists only so closing can run its own
+  // (quicker) transition-duration via its own class, and so the hooks
+  // below stay engaged until that transition actually finishes.
+  const [navPhase, setNavPhase] = useState("closed");
+  const panelRef = useRef(null);
+  const closeTimerRef = useRef(null);
+
+  function openMobileNav() {
+    if (closeTimerRef.current) {
+      clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = null;
+    }
+    setNavPhase("open");
+  }
+  function closeMobileNav() {
+    setNavPhase((p) => (p === "closed" ? p : "closing"));
+    closeTimerRef.current = window.setTimeout(() => {
+      setNavPhase("closed");
+      closeTimerRef.current = null;
+    }, MOBILE_NAV_CLOSE_MS);
+  }
+  function toggleMobileNav() {
+    if (navPhase === "open") closeMobileNav();
+    else openMobileNav();
+  }
 
   useEffect(() => {
-    setMobileOpen(false);
+    // Route change: the page already navigated, so drop the menu instantly
+    // rather than making the visit wait on a close animation it didn't ask
+    // for ("вибір пункту — навігація реагує одразу").
+    if (closeTimerRef.current) {
+      clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = null;
+    }
+    setNavPhase("closed");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
+
+  useEffect(() => () => {
+    if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
+  }, []);
+
+  const navEngaged = navPhase !== "closed";
+  useFocusTrap(panelRef, closeMobileNav, { active: navEngaged });
 
   const header = pageHeaderFor(pathname, navItems, navGroups) || pageHeaderExtra;
 
@@ -82,8 +143,8 @@ export default function AdminChrome({
             type="button"
             className="admin-burger"
             aria-label="Меню"
-            aria-expanded={mobileOpen}
-            onClick={() => setMobileOpen((v) => !v)}
+            aria-expanded={navEngaged}
+            onClick={toggleMobileNav}
           >
             <span />
             <span />
@@ -91,7 +152,19 @@ export default function AdminChrome({
           </button>
         </div>
 
-        <div className={`admin-side-panel${mobileOpen ? " is-open" : ""}`}>
+        {navEngaged ? <MobileNavScrollLock /> : null}
+        <div
+          className={`admin-side-backdrop is-${navPhase}`}
+          onClick={closeMobileNav}
+          aria-hidden="true"
+        />
+        <div
+          className={`admin-side-panel is-${navPhase}`}
+          ref={panelRef}
+          role={navEngaged ? "dialog" : undefined}
+          aria-modal={navEngaged ? "true" : undefined}
+          aria-label={navEngaged ? "Меню" : undefined}
+        >
          <div className="admin-side-panel-inner">
           <div className="admin-nav-scroll">
             {/* prefetch={false}: every nav item is a DB-backed dynamic
