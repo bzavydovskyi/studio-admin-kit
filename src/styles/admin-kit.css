@@ -84,7 +84,12 @@
 
 @media (max-width: 959px) {
   .admin-app { flex-direction: column; }
-  .admin-side { width: 100%; height: auto; position: sticky; top: 0; z-index: 100; flex-direction: column; padding: 0; }
+  /* position:fixed, not sticky: iOS Safari can visibly detach a sticky
+     element from the top for a frame during active scroll/rubber-band
+     (its dynamic toolbar resizing mid-scroll is the usual trigger),
+     which showed up here as a sliver of page content flashing above the
+     header. Fixed has no such dependency on scroll state. */
+  .admin-side { width: 100%; height: auto; position: fixed; top: 0; left: 0; right: 0; z-index: 100; flex-direction: column; padding: 0; }
   /* z-index above the backdrop (290): the backdrop is a fixed full-viewport
      layer so it also covers the header's own area, and without this the
      burger button would be unclickable (backdrop intercepting the click)
@@ -167,7 +172,10 @@
   }
   .admin-nav-scroll { flex: none; overflow: visible; }
   .admin-side-footer { border-top: 1px solid var(--border); }
-  .admin-main { padding: 20px 16px 48px; }
+  /* 89px top = the fixed header's 69px (.admin-side-top is no longer
+     in-flow now that .admin-side is position:fixed) + the original 20px
+     top padding. */
+  .admin-main { padding: 89px 16px 48px; }
   .admin-panel-head h2 { font-size: 1.3rem; }
 }
 
